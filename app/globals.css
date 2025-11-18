@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background-color: #000000;
+}
+
+@media (prefers-color-scheme: light) {
+  body {
+    background-color: #ffffff;
+  }
+}
