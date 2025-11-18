@@ -22,10 +22,12 @@ export async function POST(request: NextRequest) {
 
       // Convert messages format for Gemini
       // Gemini expects contents array with role and parts
-      const contents = messages.map((msg: { role: string; content: string }) => ({
-        role: msg.role === 'user' ? 'user' : 'model',
-        parts: [{ text: msg.content }],
-      }));
+      const contents = messages.map(
+        (msg: { role: string; content: string }) => ({
+          role: msg.role === 'user' ? 'user' : 'model',
+          parts: [{ text: msg.content }],
+        })
+      );
 
       // Prepare config object
       const config: any = {};
@@ -45,7 +47,10 @@ export async function POST(request: NextRequest) {
       let text = '';
       if (response.text) {
         text = response.text;
-      } else if (response.candidates && response.candidates[0]?.content?.parts) {
+      } else if (
+        response.candidates &&
+        response.candidates[0]?.content?.parts
+      ) {
         text = response.candidates[0].content.parts
           .map((part: any) => part.text)
           .join('');
@@ -54,7 +59,11 @@ export async function POST(request: NextRequest) {
       }
 
       // Get token usage from the response
-      const usageMetadata = response.usageMetadata || response.usage?.metadata;
+      // Check different possible locations for usage metadata
+      const usageMetadata =
+        (response as any).usageMetadata ||
+        (response as any).usage?.metadata ||
+        (response as any).usage;
       const tokenUsage = {
         promptTokenCount: usageMetadata?.promptTokenCount || 0,
         candidatesTokenCount: usageMetadata?.candidatesTokenCount || 0,

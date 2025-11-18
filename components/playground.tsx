@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import type { Provider } from '@/lib/storage'
-import { getApiKey, getSelectedKeyId } from '@/lib/storage'
+import { getApiKey, getSelectedKeyId, getSystemPrompt, setSystemPrompt as saveSystemPrompt } from '@/lib/storage'
 import { ApiKeyManager } from './api-key-manager'
 import { ModelSelector } from './model-selector'
 import { SystemPrompt } from './system-prompt'
@@ -34,7 +34,18 @@ export const Playground: React.FC = () => {
     // Check if API key exists for current provider
     const apiKey = getApiKey(provider)
     setHasApiKey(!!apiKey)
+    
+    // Load saved system prompt
+    const savedPrompt = getSystemPrompt(provider)
+    if (savedPrompt) {
+      setSystemPrompt(savedPrompt)
+    }
   }, [provider])
+  
+  const handleSystemPromptChange = (value: string) => {
+    setSystemPrompt(value)
+    saveSystemPrompt(provider, value)
+  }
 
   const handleSendMessage = async (content: string) => {
     const selectedKeyId = getSelectedKeyId(provider)
@@ -124,7 +135,7 @@ export const Playground: React.FC = () => {
 
               <SystemPrompt
                 value={systemPrompt}
-                onChange={setSystemPrompt}
+                onChange={handleSystemPromptChange}
               />
 
               <button

@@ -92,3 +92,18 @@ export const updateApiKeyName = (provider: Provider, keyId: string, name: string
   sessionStorage.setItem(getStorageKey(provider), JSON.stringify(updated))
 }
 
+// System Prompt Storage
+export const getSystemPrompt = (provider: Provider): string => {
+  if (typeof window === 'undefined') return ''
+  return sessionStorage.getItem(`system_prompt_${provider}`) || ''
+}
+
+export const setSystemPrompt = (provider: Provider, prompt: string): void => {
+  if (typeof window === 'undefined') return
+  if (prompt.trim()) {
+    sessionStorage.setItem(`system_prompt_${provider}`, prompt.trim())
+  } else {
+    sessionStorage.removeItem(`system_prompt_${provider}`)
+  }
+}
+
